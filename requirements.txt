@@ -1,0 +1,19 @@
+rank_bm25
+langchain
+langchain_community
+langchain_core
+huggingface_hub
+chromadb
+python-dotenv
+streamlit
+streamlit torch
+langchain-huggingface
+langchain-text-splitters
+langchain-chroma
+uvicorn
+unstructured[pdf]
+pdfminer.six
+sentence-transformers
+numpy 
+scikit-learn 
+nltk
