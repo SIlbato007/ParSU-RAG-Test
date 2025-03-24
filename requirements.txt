@@ -6,7 +6,7 @@ huggingface_hub
 chromadb
 python-dotenv
 streamlit
-streamlit torch
+torch
 langchain-huggingface
 langchain-text-splitters
 langchain-chroma
