@@ -25,7 +25,6 @@ class PSUChatBackend:
         self.chain = None
         self.persist_directory = persist_directory
         self.chunks = None
-        self.custom_bm25 = None  # Store custom BM25 for later use if needed
         self.vector_store = None
         self.is_initialized = False
         
@@ -64,9 +63,9 @@ class PSUChatBackend:
                 self.chunks = recursive_chunk(data)
                 self.vector_store = create_vector_store(self.chunks, embeddings, self.persist_directory)
 
-            # Setup retrievers - get both the ensemble retriever and the custom one
+            # Setup retrievers - get the ensemble retriever
             logger.info("Setting up retrievers...")
-            ensemble_retriever, self.custom_bm25 = setup_retrievers(self.vector_store, self.chunks)
+            ensemble_retriever = setup_retrievers(self.vector_store, self.chunks)
 
             # Setup LLM and prompt chain components
             logger.info("Setting up LLM and prompt chain...")
@@ -95,18 +94,3 @@ class PSUChatBackend:
         except Exception as e:
             logger.error("Error generating response: %s", str(e), exc_info=True)
             return False, f"Error generating response: {str(e)}"
-            
-    def get_custom_bm25_results(self, query, k=5):
-        """Separate method to directly use the custom BM25 implementation."""
-        if not self.custom_bm25:
-            logger.warning("Attempt to use custom BM25 when it's not initialized")
-            return False, "Custom BM25 not initialized."
-        
-        try:
-            logger.info("Retrieving BM25 results for query: %s (k=%d)", query, k)
-            self.custom_bm25.set_k(k)
-            results = self.custom_bm25.get_relevant_documents(query)
-            return True, results
-        except Exception as e:
-            logger.error("Error retrieving BM25 results: %s", str(e), exc_info=True)
-            return False, f"Error retrieving results: {str(e)}"
